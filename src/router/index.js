@@ -5,15 +5,19 @@ import findPage from '@/components/find/findPage'
 import friendPage from '@/components/friend/friendPage'
 import minePage from '@/components/mine/minePage'
 import videoPage from '@/components/video/videoPage'
-
+import loginPage from '@/components/login/loginPage'
 Vue.use(Router)
 
-export default new Router({
+const route = new Router({
   routes: [
     {
       path: '/',
-      name: 'find',
-      component: findPage
+      redirect: '/find'
+    },
+    {
+      path: '/login',
+      name: 'login',
+      component: loginPage
     },
     {
       path: '/find',
@@ -41,4 +45,26 @@ export default new Router({
       component: videoPage
     }
   ]
+})
+
+export default route
+
+route.beforeEach((to, from, next) => {
+  // ...
+  let isLogin = localStorage.getItem('loginDto')
+  const needloginArr = ['find', 'video', 'mine', 'friend', 'account']
+
+  if (needloginArr.indexOf(to.name) >= 0) {
+    if (!isLogin) {
+      next({path: '/login'})
+      return
+    }
+  }
+  if (to.name === 'login') {
+    if (isLogin) {
+      next({path: './find'})
+      return
+    }
+  }
+  next()
 })

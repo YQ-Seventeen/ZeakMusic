@@ -1,12 +1,13 @@
 <template>
   <div id="app">
     <router-view/>
-    <tabbar :items="items"></tabbar>
+    <tabbar v-show="showTabbar" :items="items"></tabbar>
   </div>
 </template>
 
 <script>
 import tabbar from '@/components/tabbar.vue'
+
 export default {
   name: 'App',
   components: {
@@ -42,19 +43,29 @@ export default {
         path: '/account',
         src: require('./assets/images/account.png'),
         ssrc: require('./assets/images/account-s.png')
-      }]
+      }],
+      showTabbar: true
     }
+  },
+  created: function () {
+    window.eventBus.$on('tabbarChange', (show) => {
+      this.showTabbar = show
+    })
+  },
+  destroyed: function () {
+    window.eventBus.$off('tabbarChange')
   }
 }
 </script>
 
-<style scoped>
+<style>
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+  height:100vh;
   /* margin-top: 60px; */
 }
 </style>

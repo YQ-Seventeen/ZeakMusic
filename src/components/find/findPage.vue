@@ -1,6 +1,6 @@
 <template>
   <div class="root">
-    <mt-button @click="click">click me</mt-button>
+
   </div>
 </template>
 
