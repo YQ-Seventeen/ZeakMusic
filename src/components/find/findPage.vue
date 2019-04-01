@@ -1,6 +1,6 @@
 <template>
   <div class="root">
-    1
+    <mt-button @click="click">click me</mt-button>
   </div>
 </template>
 
@@ -9,6 +9,11 @@ export default {
   name: 'findPage',
   data () {
     return {
+    }
+  },
+  methods: {
+    click () {
+
     }
   }
 }
