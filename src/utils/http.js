@@ -1,32 +1,66 @@
-
 import axios from 'axios'
 import Vue from 'vue'
+import {
+  Indicator,
+  Toast
+} from 'mint-ui'
+
+const combineUrl = function (url, data) {
+  url += '?'
+  for (const key in data) {
+    if (data.hasOwnProperty(key)) {
+      const element = data[key]
+      url += key + '=' + element + '&'
+    }
+  }
+  url = url.substr(0, url.length - 1)
+  return url
+}
 
 export default {
-  get: function (url, head, param, blk) {
-    var p = head || {}
-    // Object.assign({},p, {xhrFields: { withCredentials: true }})
+  get: function (url, param, callback, headers) {
+    Indicator.open()
     axios({
       method: 'get',
-      url: url,
-      headers: p,
+      url: combineUrl(url, param),
+      headers: headers || {},
       withCredentials: true,
-      baseURL: 'http://localhost:5000/',
-      data: param || {}}).then((response) => {
-      if (blk) {
-        blk((response['status'] === '200'), response.data)
-      }
-    })
-  },
-  jsonp: function (url, param, blk) {
-    Vue.jsonp('http://localhost:5000' + url, param).then(reponse => {
-      alert('成功')
-      if (blk) {
-        blk((reponse['status'] === '200'), reponse.data)
+      baseURL: 'http://localhost:3000/'
+    }).then((response) => {
+      Indicator.close()
+      if (callback) {
+        if (response['code'] === 200) {
+          callback(true, response)
+        } else {
+          callback(false, response)
+        }
       }
     }).catch(err => {
-      alert('失败')
-      console.log(err)
+      Indicator.close()
+      Toast(err)
+    })
+  },
+  post: function (url, param, callback, headers) {
+    Indicator.open()
+    console.log(param)
+    axios({
+      method: 'post',
+      url: combineUrl(url, param),
+      headers: headers || {},
+      withCredentials: true,
+      baseURL: 'http://localhost:3000/'
+    }).then((response) => {
+      Indicator.close()
+      if (callback) {
+        if (response['code'] === 200) {
+          callback(true, response)
+        } else {
+          callback(false, response)
+        }
+      }
+    }).catch(err => {
+      Indicator.close()
+      Toast(err)
     })
   }
 }
